@@ -1,0 +1,71 @@
+org: jhonchilo #cambialo por eltuyo mi king 
+service: api-usuarios
+
+provider:
+  name: aws
+  runtime: python3.13
+  memorySize: 1024
+  timeout: 30
+  region: us-east-1
+  iam:
+    role: arn:aws:iam::<tu-account-id>:role/LabRole  # Reemplaza <tu-account-id> por el que te asignaron
+  environment:
+    USERS_TABLE: t_usuarios
+    SECRET_KEY: ${env:SECRET_KEY}
+
+functions:
+  register:
+    handler: controller.register
+    events:
+      - httpApi:
+          path: /usuarios
+          method: post
+
+  login:
+    handler: controller.login
+    events:
+      - httpApi:
+          path: /login
+          method: post
+
+  listUsers:
+    handler: controller.list_users
+    events:
+      - httpApi:
+          path: /usuarios
+          method: get
+
+  getUser:
+    handler: controller.get_user
+    events:
+      - httpApi:
+          path: /usuarios/{id}
+          method: get
+
+  updateUser:
+    handler: controller.update_user
+    events:
+      - httpApi:
+          path: /usuarios/{id}
+          method: put
+
+  deleteUser:
+    handler: controller.delete_user
+    events:
+      - httpApi:
+          path: /usuarios/{id}
+          method: delete
+
+resources:
+  Resources:
+    UsuariosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: t_usuarios
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
