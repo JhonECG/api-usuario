@@ -1,7 +1,5 @@
 import os
 import jwt
-from fastapi import HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import datetime, timedelta
 
 SECRET_KEY = os.getenv("JWT_SECRET", "clave_secreta")
@@ -12,18 +10,29 @@ def create_access_token(data: dict, expires_delta: int = 3600):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
 
-security = HTTPBearer()
-
-def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+def verify_token(event):
     try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=["HS256"])
-        return payload
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expirado")
-    except jwt.PyJWTError:
-        raise HTTPException(status_code=401, detail="Token inválido")
+        auth_header = event['headers'].get('Authorization')
+        if not auth_header:
+            return {"statusCode": 401, "body": "Token no proporcionado"}
 
-def require_admin(user=Depends(verify_token)):
-    if user.get("rol") != "admin":
-        raise HTTPException(status_code=403, detail="Acceso restringido a administradores")
-    return user
+        token = auth_header.split(" ")[1]
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        return payload
+
+    except jwt.ExpiredSignatureError:
+        return {"statusCode": 401, "body": "Token expirado"}
+
+    except jwt.PyJWTError:
+        return {"statusCode": 401, "body": "Token inválido"}
+
+def require_admin(event):
+    payload = verify_token(event)
+    if isinstance(payload, dict) and payload.get("statusCode"):
+        # Error en la verificación del token
+        return payload
+
+    if payload.get("rol") != "admin":
+        return {"statusCode": 403, "body": "Acceso restringido a administradores"}
+
+    return payload

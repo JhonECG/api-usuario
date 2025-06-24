@@ -1,4 +1,4 @@
-org: jhonchilo 
+org: jhonchilo
 service: api-usuarios
 
 provider:
@@ -6,66 +6,82 @@ provider:
   runtime: python3.13
   memorySize: 1024
   timeout: 30
-  region: us-east-1
   iam:
-    role: arn:aws:iam::439947773262:role/LabRole 
+    role: arn:aws:iam::277127313666:role/LabRole
   environment:
-    USERS_TABLE: t_usuarios
-    SECRET_KEY: ${env:SECRET_KEY}
+    TABLE_NAME: ${sls:stage}-t_usuarios
+    ADMIN_EMAILS: "jhon.chilo@utec.edu.pe,sergio.delgado.a@utec.edu.pe,federico.iribar@utec.edu.pe"
+    JWT_SECRET: "tu_clave_secreta_super_segura"
 
 functions:
-  register:
-    handler: crear_usuario.register
+  crearUsuario:
+    handler: crear_usuario.lambda_handler
     events:
-      - httpApi:
-          path: /register
+      - http:
+          path: /{tenant_id}/registro
           method: post
+          cors: true
+          integration: lambda
 
-  login:
-    handler: login_usuario.login
+  loginUsuario:
+    handler: login_usuario.lambda_handler
     events:
-      - httpApi:
-          path: /login
+      - http:
+          path: /{tenant_id}/login
           method: post
+          cors: true
+          integration: lambda
 
-  listUsers:
-    handler: listar_usuarios.list_users
+  listarUsuarios:
+    handler: listar_usuarios.lambda_handler
     events:
-      - httpApi:
-          path: /usuarios
+      - http:
+          path: /{tenant_id}/usuarios
           method: get
+          cors: true
+          integration: lambda
 
-  getUser:
-    handler: obtener_usuario.get_user
+  obtenerUsuario:
+    handler: obtener_usuario.lambda_handler
     events:
-      - httpApi:
-          path: /usuarios/{id}
+      - http:
+          path: /{tenant_id}/usuarios/{usuario_id}
           method: get
+          cors: true
+          integration: lambda
 
-  updateUser:
-    handler: modificar_usuario.update_user
+  modificarUsuario:
+    handler: modificar_usuario.lambda_handler
     events:
-      - httpApi:
-          path: /usuarios/{id}
+      - http:
+          path: /{tenant_id}/usuarios/{usuario_id}
           method: put
+          cors: true
+          integration: lambda
 
-  deleteUser:
-    handler: eliminar_usuario.delete_user
+  eliminarUsuario:
+    handler: eliminar_usuario.lambda_handler
     events:
-      - httpApi:
-          path: /usuarios/{id}
+      - http:
+          path: /{tenant_id}/usuarios/{usuario_id}
           method: delete
+          cors: true
+          integration: lambda
 
 resources:
   Resources:
-    UsuariosTable:
+    TablaUsuarios:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: t_usuarios
-        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.TABLE_NAME}
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: tenant_id
+            AttributeType: S
+          - AttributeName: usuario_id
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: tenant_id
             KeyType: HASH
+          - AttributeName: usuario_id
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
