@@ -1,4 +1,4 @@
-org: jhonchilo #cambialo por eltuyo mi king 
+org: jhonchilo 
 service: api-usuarios
 
 provider:
@@ -8,7 +8,7 @@ provider:
   timeout: 30
   region: us-east-1
   iam:
-    role: arn:aws:iam::<tu-account-id>:role/LabRole  # Reemplaza <tu-account-id> por el que te asignaron
+    role: arn:aws:iam::439947773262:role/LabRole 
   environment:
     USERS_TABLE: t_usuarios
     SECRET_KEY: ${env:SECRET_KEY}
