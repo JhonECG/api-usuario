@@ -18,7 +18,7 @@ functions:
     handler: crear_usuario.register
     events:
       - httpApi:
-          path: /usuarios
+          path: /register
           method: post
 
   login:
