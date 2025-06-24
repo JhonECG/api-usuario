@@ -15,42 +15,42 @@ provider:
 
 functions:
   register:
-    handler: controller.register
+    handler: crear_usuario.register
     events:
       - httpApi:
           path: /usuarios
           method: post
 
   login:
-    handler: controller.login
+    handler: login_usuario.login
     events:
       - httpApi:
           path: /login
           method: post
 
   listUsers:
-    handler: controller.list_users
+    handler: listar_usuarios.list_users
     events:
       - httpApi:
           path: /usuarios
           method: get
 
   getUser:
-    handler: controller.get_user
+    handler: obtener_usuario.get_user
     events:
       - httpApi:
           path: /usuarios/{id}
           method: get
 
   updateUser:
-    handler: controller.update_user
+    handler: modificar_usuario.update_user
     events:
       - httpApi:
           path: /usuarios/{id}
           method: put
 
   deleteUser:
-    handler: controller.delete_user
+    handler: eliminar_usuario.delete_user
     events:
       - httpApi:
           path: /usuarios/{id}
