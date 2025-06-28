@@ -4,12 +4,38 @@ import boto3
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('t_usuarios')
 
-def get_user(event, context):
-    user_id = event['pathParameters']['id']
+def lambda_handler(event, context):
+    try:
+        body = json.loads(event['body'])
+        empresa = body['empresa']
+        user_id = body['id']
 
-    response = table.get_item(Key={'id': user_id})
+        # Hacemos una consulta directa por la clave primaria compuesta (empresa, id)
+        response = table.get_item(
+            Key={
+                'empresa': empresa,
+                'id': user_id
+            }
+        )
 
-    if 'Item' not in response:
-        return {'statusCode': 404, 'body': json.dumps({'message': 'Usuario no encontrado'})}
+        user = response.get('Item')
 
-    return {'statusCode': 200, 'body': json.dumps(response['Item'])}
+        if not user:
+            return {
+                'statusCode': 404,
+                'body': json.dumps({'message': 'Usuario no encontrado'})
+            }
+
+        # No devolvemos la contraseña
+        user.pop('password', None)
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps(user)
+        }
+
+    except Exception as e:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'error': str(e)})
+        }
