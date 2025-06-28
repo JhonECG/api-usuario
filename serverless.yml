@@ -21,7 +21,7 @@ functions:
         - crear_usuario.py
         - modules/**
     events:
-      - httpApi:
+      - http:
           path: /usuarios/crear
           method: post
           cors: true
@@ -33,7 +33,7 @@ functions:
         - eliminar_usuario.py
         - modules/**
     events:
-      - httpApi:
+      - http:
           path: /usuarios/eliminar
           method: delete
           cors: true
@@ -45,7 +45,7 @@ functions:
         - listar_usuarios.py
         - modules/**
     events:
-      - httpApi:
+      - http:
           path: /usuarios/listar
           method: post
           cors: true
@@ -57,7 +57,7 @@ functions:
         - obtener_usuario.py
         - modules/**
     events:
-      - httpApi:
+      - http:
           path: /usuarios/obtener
           method: post
           cors: true
@@ -69,7 +69,7 @@ functions:
         - modificar_usuario.py
         - modules/**
     events:
-      - httpApi:
+      - http:
           path: /usuarios/modificar
           method: put
           cors: true
@@ -81,7 +81,7 @@ functions:
         - login_usuario.py
         - modules/**
     events:
-      - httpApi:
+      - http:
           path: /usuarios/login
           method: post
           cors: true
@@ -93,7 +93,7 @@ functions:
         - verify_token.py
         - modules/**
     events:
-      - httpApi:
+      - http:
           path: /usuarios/verify
           method: get
           cors: true
