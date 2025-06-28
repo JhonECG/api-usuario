@@ -4,9 +4,21 @@ import boto3
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('t_usuarios')
 
-def delete_user(event, context):
-    user_id = event['pathParameters']['id']
+def lambda_handler(event, context):
+    try:
+        body = json.loads(event['body'])
+        empresa = body['empresa']
+        user_id = body['id']
 
-    table.delete_item(Key={'id': user_id})
+        response = table.delete_item(
+            Key={'empresa': empresa, 'id': user_id},
+            ConditionExpression='attribute_exists(id)'  # Para evitar eliminar un registro inexistente
+        )
 
-    return {'statusCode': 200, 'body': json.dumps({'message': 'Usuario eliminado correctamente'})}
+        return {'statusCode': 200, 'body': json.dumps({'message': 'Usuario eliminado correctamente'})}
+
+    except dynamodb.meta.client.exceptions.ConditionalCheckFailedException:
+        return {'statusCode': 404, 'body': json.dumps({'message': 'Usuario no encontrado'})}
+
+    except Exception as e:
+        return {'statusCode': 400, 'body': json.dumps({'error': str(e)})}
