@@ -4,8 +4,30 @@ import boto3
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('t_usuarios')
 
-def list_users(event, context):
-    response = table.scan()
-    items = response.get('Items', [])
+def lambda_handler(event, context):
+    try:
+        body = json.loads(event['body'])
+        empresa = body['empresa']
 
-    return {'statusCode': 200, 'body': json.dumps(items)}
+        # Query para obtener todos los usuarios de la empresa
+        response = table.query(
+            KeyConditionExpression='empresa = :empresa_val',
+            ExpressionAttributeValues={':empresa_val': empresa}
+        )
+
+        usuarios = response.get('Items', [])
+
+        # Remover contraseñas del resultado por seguridad
+        for usuario in usuarios:
+            usuario.pop('password', None)
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps({'usuarios': usuarios})
+        }
+
+    except Exception as e:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'error': str(e)})
+        }
