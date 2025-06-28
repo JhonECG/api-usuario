@@ -102,9 +102,20 @@ resources:
             AttributeType: S
           - AttributeName: id
             AttributeType: S
+          - AttributeName: email
+            AttributeType: S  # Necesario para el índice
         KeySchema:
           - AttributeName: empresa
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: EmpresaEmailIndex
+            KeySchema:
+              - AttributeName: empresa
+                KeyType: HASH
+              - AttributeName: email
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
