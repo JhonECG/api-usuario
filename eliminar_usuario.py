@@ -2,7 +2,8 @@ import json
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('t_usuarios')
+table_name = os.getenv('TABLE_NAME')
+table = dynamodb.Table(table_name)
 
 def lambda_handler(event, context):
     try:
