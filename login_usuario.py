@@ -5,7 +5,8 @@ import jwt
 from datetime import datetime, timedelta
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('t_usuarios')
+table_name = os.getenv('TABLE_NAME')
+table = dynamodb.Table(table_name)
 
 SECRET_KEY = os.getenv('JWT_SECRET', 'clave_secreta')
 
