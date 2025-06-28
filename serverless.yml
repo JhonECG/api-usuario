@@ -19,7 +19,6 @@ functions:
     package:
       include:
         - crear_usuario.py
-        - modules/**
     events:
       - http:
           path: /usuarios/crear
@@ -31,7 +30,6 @@ functions:
     package:
       include:
         - eliminar_usuario.py
-        - modules/**
     events:
       - http:
           path: /usuarios/eliminar
@@ -43,7 +41,6 @@ functions:
     package:
       include:
         - listar_usuarios.py
-        - modules/**
     events:
       - http:
           path: /usuarios/listar
@@ -55,7 +52,6 @@ functions:
     package:
       include:
         - obtener_usuario.py
-        - modules/**
     events:
       - http:
           path: /usuarios/obtener
@@ -67,7 +63,6 @@ functions:
     package:
       include:
         - modificar_usuario.py
-        - modules/**
     events:
       - http:
           path: /usuarios/modificar
@@ -79,7 +74,6 @@ functions:
     package:
       include:
         - login_usuario.py
-        - modules/**
     events:
       - http:
           path: /usuarios/login
@@ -91,7 +85,6 @@ functions:
     package:
       include:
         - verify_token.py
-        - modules/**
     events:
       - http:
           path: /usuarios/verify
