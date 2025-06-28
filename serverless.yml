@@ -16,57 +16,87 @@ provider:
 functions:
   crearUsuario:
     handler: crear_usuario.lambda_handler
+    package:
+      include:
+        - crear_usuario.py
+        - modules/**
     events:
-      - http:
-          path: /{tenant_id}/registro
+      - httpApi:
+          path: /usuarios/crear
           method: post
           cors: true
-          integration: lambda
-
-  loginUsuario:
-    handler: login_usuario.lambda_handler
-    events:
-      - http:
-          path: /{tenant_id}/login
-          method: post
-          cors: true
-          integration: lambda
-
-  listarUsuarios:
-    handler: listar_usuarios.lambda_handler
-    events:
-      - http:
-          path: /{tenant_id}/usuarios
-          method: get
-          cors: true
-          integration: lambda
-
-  obtenerUsuario:
-    handler: obtener_usuario.lambda_handler
-    events:
-      - http:
-          path: /{tenant_id}/usuarios/{usuario_id}
-          method: get
-          cors: true
-          integration: lambda
-
-  modificarUsuario:
-    handler: modificar_usuario.lambda_handler
-    events:
-      - http:
-          path: /{tenant_id}/usuarios/{usuario_id}
-          method: put
-          cors: true
-          integration: lambda
 
   eliminarUsuario:
     handler: eliminar_usuario.lambda_handler
+    package:
+      include:
+        - eliminar_usuario.py
+        - modules/**
     events:
-      - http:
-          path: /{tenant_id}/usuarios/{usuario_id}
+      - httpApi:
+          path: /usuarios/eliminar
           method: delete
           cors: true
-          integration: lambda
+
+  listarUsuarios:
+    handler: listar_usuarios.lambda_handler
+    package:
+      include:
+        - listar_usuarios.py
+        - modules/**
+    events:
+      - httpApi:
+          path: /usuarios/listar
+          method: post
+          cors: true
+
+  obtenerUsuario:
+    handler: obtener_usuario.lambda_handler
+    package:
+      include:
+        - obtener_usuario.py
+        - modules/**
+    events:
+      - httpApi:
+          path: /usuarios/obtener
+          method: post
+          cors: true
+
+  modificarUsuario:
+    handler: modificar_usuario.lambda_handler
+    package:
+      include:
+        - modificar_usuario.py
+        - modules/**
+    events:
+      - httpApi:
+          path: /usuarios/modificar
+          method: put
+          cors: true
+
+  loginUsuario:
+    handler: login_usuario.lambda_handler
+    package:
+      include:
+        - login_usuario.py
+        - modules/**
+    events:
+      - httpApi:
+          path: /usuarios/login
+          method: post
+          cors: true
+
+  verifyToken:
+    handler: verify_token.lambda_handler
+    package:
+      include:
+        - verify_token.py
+        - modules/**
+    events:
+      - httpApi:
+          path: /usuarios/verify
+          method: get
+          cors: true
 
 resources:
   Resources:
