@@ -9,13 +9,13 @@ table = dynamodb.Table(table_name)
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
-        tenant_id = body['tenant_id']
-        user_id = body['id']
+        tenant_id = body.get('tenant_id')
+        user_id = body.get('id')
 
-        # Campos que se pueden actualizar
+        if not tenant_id or not user_id:
+            return {'statusCode': 400, 'body': json.dumps({'message': 'Faltan tenant_id o id en la solicitud'})}
+
         update_fields = ['nombres', 'apellidos', 'telefono', 'direccion', 'password']
-
-        # Construir expresión de actualización dinámica
         update_expression = []
         expression_values = {}
 
@@ -35,9 +35,11 @@ def lambda_handler(event, context):
         )
 
         updated_user = response.get('Attributes', {})
-        updated_user.pop('password', None)  # No devolvemos la contraseña
+        if not updated_user:
+            return {'statusCode': 404, 'body': json.dumps({'message': 'No se encontró el usuario para modificar'})}
+        updated_user.pop('password', None)
 
-        return {'statusCode': 200, 'body': json.dumps({'message': 'Usuario actualizado', 'user': updated_user})}
+        return {'statusCode': 200, 'body': json.dumps({'message': 'Usuario modificado exitosamente', 'user': updated_user})}
 
     except Exception as e:
-        return {'statusCode': 400, 'body': json.dumps({'error': str(e)})}
+        return {'statusCode': 500, 'body': json.dumps({'message': 'Error al modificar usuario', 'error': str(e)})}

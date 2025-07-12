@@ -25,19 +25,27 @@ def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
 
+        required_fields = ['tenant_id', 'nombres', 'apellidos', 'email', 'telefono', 'direccion', 'password']
+        for field in required_fields:
+            if field not in body:
+                return {
+                    'statusCode': 400,
+                    'body': json.dumps({'message': f'Falta el campo obligatorio: {field}'})
+                }
+
         tenant_id = body['tenant_id']
         user_id = str(uuid.uuid4())
         fecha_registro = datetime.utcnow().isoformat()
 
         item = {
-            'tenant_id': tenant_id,  # Partition Key
-            'id': user_id,       # Sort Key
+            'tenant_id': tenant_id,
+            'id': user_id,
             'nombres': body['nombres'],
             'apellidos': body['apellidos'],
             'email': body['email'],
             'telefono': body['telefono'],
             'direccion': json.dumps(body['direccion']),
-            'password': body['password'],  # Hashear en producción
+            'password': body['password'],
             'fecha_registro': fecha_registro,
             'rol': 'user'
         }
@@ -48,11 +56,11 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 201,
-            'body': json.dumps({'token': token})
+            'body': json.dumps({'message': 'Usuario creado exitosamente', 'token': token, 'user_id': user_id})
         }
 
     except Exception as e:
         return {
-            'statusCode': 400,
-            'body': json.dumps({'error': str(e)})
+            'statusCode': 500,
+            'body': json.dumps({'message': 'Error al crear usuario', 'error': str(e)})
         }

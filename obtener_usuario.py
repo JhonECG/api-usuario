@@ -9,10 +9,12 @@ table = dynamodb.Table(table_name)
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
-        tenant_id = body['tenant_id']
-        user_id = body['id']
+        tenant_id = body.get('tenant_id')
+        user_id = body.get('id')
 
-        # Hacemos una consulta directa por la clave primaria compuesta (tenant_id, id)
+        if not tenant_id or not user_id:
+            return {'statusCode': 400, 'body': json.dumps({'message': 'Faltan tenant_id o id en la solicitud'})}
+
         response = table.get_item(
             Key={
                 'tenant_id': tenant_id,
@@ -23,21 +25,11 @@ def lambda_handler(event, context):
         user = response.get('Item')
 
         if not user:
-            return {
-                'statusCode': 404,
-                'body': json.dumps({'message': 'Usuario no encontrado'})
-            }
+            return {'statusCode': 404, 'body': json.dumps({'message': 'No se encontró el usuario solicitado'})}
 
-        # No devolvemos la contraseña
         user.pop('password', None)
 
-        return {
-            'statusCode': 200,
-            'body': json.dumps(user)
-        }
+        return {'statusCode': 200, 'body': json.dumps({'message': 'Usuario encontrado', 'user': user})}
 
     except Exception as e:
-        return {
-            'statusCode': 400,
-            'body': json.dumps({'error': str(e)})
-        }
+        return {'statusCode': 500, 'body': json.dumps({'message': 'Error al obtener usuario', 'error': str(e)})}
