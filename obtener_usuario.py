@@ -9,13 +9,13 @@ table = dynamodb.Table(table_name)
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
-        empresa = body['empresa']
+        tenant_id = body['tenant_id']
         user_id = body['id']
 
-        # Hacemos una consulta directa por la clave primaria compuesta (empresa, id)
+        # Hacemos una consulta directa por la clave primaria compuesta (tenant_id, id)
         response = table.get_item(
             Key={
-                'empresa': empresa,
+                'tenant_id': tenant_id,
                 'id': user_id
             }
         )

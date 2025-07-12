@@ -98,14 +98,14 @@ resources:
       Properties:
         TableName: ${self:provider.environment.TABLE_NAME}
         AttributeDefinitions:
-          - AttributeName: empresa
+          - AttributeName: tenant_id
             AttributeType: S
           - AttributeName: id
             AttributeType: S
           - AttributeName: email
             AttributeType: S  # Necesario para el índice
         KeySchema:
-          - AttributeName: empresa
+          - AttributeName: tenant_id
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
@@ -113,7 +113,7 @@ resources:
         GlobalSecondaryIndexes:
           - IndexName: EmpresaEmailIndex
             KeySchema:
-              - AttributeName: empresa
+              - AttributeName: tenant_id
                 KeyType: HASH
               - AttributeName: email
                 KeyType: RANGE

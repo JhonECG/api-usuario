@@ -9,11 +9,11 @@ table = dynamodb.Table(table_name)
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
-        empresa = body['empresa']
+        tenant_id = body['tenant_id']
         user_id = body['id']
 
         response = table.delete_item(
-            Key={'empresa': empresa, 'id': user_id},
+            Key={'tenant_id': tenant_id, 'id': user_id},
             ConditionExpression='attribute_exists(id)'  # Para evitar eliminar un registro inexistente
         )
 

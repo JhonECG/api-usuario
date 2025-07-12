@@ -10,10 +10,10 @@ table = dynamodb.Table(table_name)
 
 SECRET_KEY = os.getenv('JWT_SECRET', 'clave_secreta')
 
-def create_access_token(user_id, empresa, expires_delta=3600):
+def create_access_token(user_id, tenant_id, expires_delta=3600):
     payload = {
         'id': user_id,
-        'empresa': empresa,
+        'tenant_id': tenant_id,
         'exp': datetime.utcnow() + timedelta(seconds=expires_delta)
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
@@ -22,16 +22,16 @@ def create_access_token(user_id, empresa, expires_delta=3600):
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
-        empresa = body['empresa']
+        tenant_id = body['tenant_id']
         email = body['email']
         password = body['password']
 
-        # Query por empresa usando GSI de email
+        # Query por tenant usando GSI de email
         response = table.query(
             IndexName='gsi_email',
-            KeyConditionExpression='empresa = :empresa_val AND email = :email_val',
+            KeyConditionExpression='tenant_id = :tenant_id_val AND email = :email_val',
             ExpressionAttributeValues={
-                ':empresa_val': empresa,
+                ':tenant_id_val': tenant_id,
                 ':email_val': email
             }
         )
@@ -47,7 +47,7 @@ def lambda_handler(event, context):
         user = items[0]
         user_id = user['id']
 
-        token = create_access_token(user_id, empresa)
+        token = create_access_token(user_id, tenant_id)
 
         return {
             'statusCode': 200,

@@ -9,7 +9,7 @@ table = dynamodb.Table(table_name)
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
-        empresa = body['empresa']
+        tenant_id = body['tenant_id']
         user_id = body['id']
 
         # Campos que se pueden actualizar
@@ -28,7 +28,7 @@ def lambda_handler(event, context):
             return {'statusCode': 400, 'body': json.dumps({'message': 'No hay campos para actualizar'})}
 
         response = table.update_item(
-            Key={'empresa': empresa, 'id': user_id},
+            Key={'tenant_id': tenant_id, 'id': user_id},
             UpdateExpression="SET " + ", ".join(update_expression),
             ExpressionAttributeValues=expression_values,
             ReturnValues="ALL_NEW"

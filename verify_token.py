@@ -22,6 +22,7 @@ def lambda_handler(event, context):
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
 
         # Si no hay excepción, el token es válido
+        # Se espera que el payload contenga 'tenant_id' en vez de 'empresa'
         return {
             "statusCode": 200,
             "body": json.dumps({"message": "Token válido", "payload": payload})

@@ -9,12 +9,12 @@ table = dynamodb.Table(table_name)
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
-        empresa = body['empresa']
+        tenant_id = body['tenant_id']
 
-        # Query para obtener todos los usuarios de la empresa
+        # Query para obtener todos los usuarios del tenant
         response = table.query(
-            KeyConditionExpression='empresa = :empresa_val',
-            ExpressionAttributeValues={':empresa_val': empresa}
+            KeyConditionExpression='tenant_id = :tenant_id_val',
+            ExpressionAttributeValues={':tenant_id_val': tenant_id}
         )
 
         usuarios = response.get('Items', [])
