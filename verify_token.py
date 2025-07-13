@@ -12,6 +12,7 @@ def lambda_handler(event, context):
         if not auth_header:
             return {
                 "statusCode": 401,
+                "headers": {"Access-Control-Allow-Origin": "*"},
                 "body": json.dumps({"message": "Token no proporcionado"})
             }
 
@@ -25,17 +26,20 @@ def lambda_handler(event, context):
         # Se espera que el payload contenga 'tenant_id' en vez de 'empresa'
         return {
             "statusCode": 200,
+            "headers": {"Access-Control-Allow-Origin": "*"},
             "body": json.dumps({"message": "Token válido", "payload": payload})
         }
 
     except jwt.ExpiredSignatureError:
         return {
             "statusCode": 401,
+            "headers": {"Access-Control-Allow-Origin": "*"},
             "body": json.dumps({"message": "Token expirado"})
         }
 
     except jwt.PyJWTError:
         return {
             "statusCode": 401,
+            "headers": {"Access-Control-Allow-Origin": "*"},
             "body": json.dumps({"message": "Token inválido"})
         }

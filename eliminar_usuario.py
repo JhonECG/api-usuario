@@ -13,17 +13,33 @@ def lambda_handler(event, context):
         user_id = body.get('id')
 
         if not tenant_id or not user_id:
-            return {'statusCode': 400, 'body': json.dumps({'message': 'Faltan tenant_id o id en la solicitud'})}
+            return {
+                'statusCode': 400,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'message': 'Faltan tenant_id o id en la solicitud'})
+            }
 
         response = table.delete_item(
             Key={'tenant_id': tenant_id, 'id': user_id},
             ConditionExpression='attribute_exists(id)'
         )
 
-        return {'statusCode': 200, 'body': json.dumps({'message': f'Usuario {user_id} eliminado correctamente'})}
+        return {
+            'statusCode': 200,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'message': f'Usuario {user_id} eliminado correctamente'})
+        }
 
     except dynamodb.meta.client.exceptions.ConditionalCheckFailedException:
-        return {'statusCode': 404, 'body': json.dumps({'message': 'No se encontró el usuario para eliminar'})}
+        return {
+            'statusCode': 404,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'message': 'No se encontró el usuario para eliminar'})
+        }
 
     except Exception as e:
-        return {'statusCode': 500, 'body': json.dumps({'message': 'Error al eliminar usuario', 'error': str(e)})}
+        return {
+            'statusCode': 500,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'message': 'Error al eliminar usuario', 'error': str(e)})
+        }

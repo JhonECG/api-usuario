@@ -28,7 +28,7 @@ def lambda_handler(event, context):
 
         # Query por tenant usando GSI de email
         response = table.query(
-            IndexName='EmpresaEmailIndex',  # <-- usa el nombre correcto del índice
+            IndexName='EmpresaEmailIndex',
             KeyConditionExpression='tenant_id = :tenant_id_val AND email = :email_val',
             ExpressionAttributeValues={
                 ':tenant_id_val': tenant_id,
@@ -41,6 +41,7 @@ def lambda_handler(event, context):
         if not items or items[0]['password'] != password:
             return {
                 'statusCode': 401,
+                'headers': {'Access-Control-Allow-Origin': '*'},
                 'body': json.dumps({'message': 'Credenciales inválidas'})
             }
 
@@ -51,11 +52,13 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
+            'headers': {'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({'token': token})
         }
 
     except Exception as e:
         return {
             'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({'error': str(e)})
         }

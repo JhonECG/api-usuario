@@ -12,7 +12,11 @@ def lambda_handler(event, context):
         tenant_id = body.get('tenant_id')
 
         if not tenant_id:
-            return {'statusCode': 400, 'body': json.dumps({'message': 'Falta tenant_id en la solicitud'})}
+            return {
+                'statusCode': 400,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'message': 'Falta tenant_id en la solicitud'})
+            }
 
         response = table.query(
             KeyConditionExpression='tenant_id = :tenant_id_val',
@@ -26,15 +30,21 @@ def lambda_handler(event, context):
             usuario.pop('password', None)
 
         if not usuarios:
-            return {'statusCode': 404, 'body': json.dumps({'message': 'No se encontraron usuarios para el tenant solicitado'})}
+            return {
+                'statusCode': 404,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'message': 'No se encontraron usuarios para el tenant solicitado'})
+            }
 
         return {
             'statusCode': 200,
+            'headers': {'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({'usuarios': usuarios, 'message': f'Se encontraron {len(usuarios)} usuarios'})
         }
 
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': {'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({'message': 'Error al listar usuarios', 'error': str(e)})
         }
