@@ -28,7 +28,7 @@ def lambda_handler(event, context):
 
         # Query por tenant usando GSI de email
         response = table.query(
-            IndexName='gsi_email',
+            IndexName='EmpresaEmailIndex',  # <-- usa el nombre correcto del índice
             KeyConditionExpression='tenant_id = :tenant_id_val AND email = :email_val',
             ExpressionAttributeValues={
                 ':tenant_id_val': tenant_id,
