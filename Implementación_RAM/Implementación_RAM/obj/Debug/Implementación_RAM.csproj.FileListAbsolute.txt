@@ -1,0 +1,8 @@
+D:\.NET\Implementación_RAM\Implementación_RAM\bin\Debug\Implementación_RAM.exe.config
+D:\.NET\Implementación_RAM\Implementación_RAM\bin\Debug\Implementación_RAM.exe
+D:\.NET\Implementación_RAM\Implementación_RAM\bin\Debug\Implementación_RAM.pdb
+D:\.NET\Implementación_RAM\Implementación_RAM\obj\Debug\Implementación_RAM.csproj.AssemblyReference.cache
+D:\.NET\Implementación_RAM\Implementación_RAM\obj\Debug\Implementación_RAM.csproj.CoreCompileInputs.cache
+D:\.NET\Implementación_RAM\Implementación_RAM\obj\Debug\Implementación_RAM.exe
+D:\.NET\Implementación_RAM\Implementación_RAM\obj\Debug\Implementación_RAM.pdb
+D:\.NET\Implementación_RAM\Implementación_RAM\obj\Debug\Implementación_RAM.exe.config
